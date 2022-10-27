@@ -4,7 +4,7 @@
  * _strcmp - compares two strings
  *
  * @s1: string No 1
- * 
+ *
  * @s2: string No 2
  *
  * Return: an integer less than, equal to, or greater

@@ -19,7 +19,7 @@ int is_prime_number(int n)
 /**
  * test - test
  *
- * @n; int
+ * @n: int
  *
  * @x: int
  */

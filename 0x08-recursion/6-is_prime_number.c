@@ -22,6 +22,8 @@ int is_prime_number(int n)
  * @n: int
  *
  * @x: int
+ *
+ * Return: int
  */
 int test(int n, int x)
 {

@@ -3,6 +3,8 @@
 
 /**
  * main - prints its name, followed by a new line
+ * @argc: int
+ * @argv: pointer to char[]
  * Return: Always 0
  */
 int main(int argc, char *argv[])

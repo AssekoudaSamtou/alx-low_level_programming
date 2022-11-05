@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 			return (1);
 		}
 	}
-	
+
 	printf("%d\n", sum);
 	return (0);
 }
@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
 int isnumber(char *s)
 {
 	int len, i;
-	len = strlen(s);
 
+	len = strlen(s);
 	for (i = 0; i < len; i++)
 	{
 		if (!isdigit(s[i]))

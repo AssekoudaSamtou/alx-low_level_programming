@@ -32,7 +32,8 @@ int create_file(const char *filename, char *text_content)
 			return (-1);
 	}
 
-	write_count = write(fd, text_content, _strlen(text_content));
+	if (text_content != NULL)
+		write_count = write(fd, text_content, _strlen(text_content));
 
 	if (write_count == -1)
 		return (-1);

@@ -41,3 +41,26 @@ ssize_t read_textfile(const char *filename, size_t letters)
 	close(fd);
 	return (write_count);
 }
+
+/**
+ * read_textfile_ - reads a text file and prints it to the POSIX standard output
+ * @filename: the filename
+ * @letters: number of letters
+ * Return: the actual number of letters it could read and print
+ */
+char *read_textfile_(const int fd, size_t letters)
+{
+	ssize_t read_count;
+	char *buf;
+
+	buf = malloc(sizeof(char) * (letters + 1));
+
+	read_count = read(fd, buf, letters);
+
+	if (read_count == -1)
+		return (NULL);
+
+	buf[read_count] = '\0';
+
+	return (buf);
+}

@@ -1,8 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include "main.h"
 
 int _strlen(char *s);
+int write_file(const int fd, char *text_content);
+void print_cant_read_err(char *filename);
+void print_cant_write_err(char *filename);
+void print_cant_close_err(int fd);
 
 /**
  * main - check the code
@@ -17,7 +23,7 @@ int main(int ac, char **av)
 
 	if (ac != 3)
 	{
-		dprintf(2, "Usage: cp file_from file_to\n");
+		write(STDERR_FILENO, "Usage: cp file_from file_to\n", 27);
 		exit(97);
 	}
 
@@ -25,40 +31,49 @@ int main(int ac, char **av)
 	if (fd1 == -1)
 	{
 		print_cant_read_err(av[0]);
-		return (98);
+		exit(98);
 	}
 
 	content_from = read_textfile_(fd1, 1024);
 	if (content_from == NULL)
 	{
 		print_cant_read_err(av[0]);
-		return (98);
+		exit(98);
 	}
 
-	fd2 = open(filename, O_WRONLY);
+	fd2 = open(av[2], O_WRONLY);
 	if (fd2 == -1)
 	{
-		fd2 = open(filename, O_CREAT | O_WRONLY, 0600);
+		fd2 = open(av[2], O_CREAT | O_WRONLY, 0662);
 
 		if (fd2 == -1)
 		{
-			print_cant_read_err(av[0]);
-			return (99);
+			print_cant_write_err(av[0]);
+			exit(99);
 		}
 	}
 
-	write_count = write(fd, text_content, _strlen(text_content));
+	write_count = write(fd2, content_from, _strlen(content_from));
 
 	if (write_count == -1)
 	{
-		print_cant_read_err(av[0]);
-		return (99);
+		print_cant_write_err(av[0]);
+		exit(99);
 	}
 
+	if (!close(fd1))
+	{
+		print_cant_close_err(fd1);
+		exit(100);
+	}
 
-	/**res = append_text_to_file(av[1], av[2]);*/
-	printf("%s\n", content_from);
-	return (0);
+	if (!close(fd2))
+	{
+		print_cant_close_err(fd2);
+		exit(100);
+	}
+
+	exit(0);
 }
 
 /**
@@ -92,4 +107,50 @@ void print_cant_read_err(char *filename)
 	write(STDERR_FILENO, msg, _strlen(msg));
 	write(STDERR_FILENO, filename, _strlen(filename));
 	write(STDERR_FILENO, "\n", 1);
+}
+
+/**
+ * print_cant_write_err - ccc
+ * @filename: filename
+ * Return: Always void
+ */
+void print_cant_write_err(char *filename)
+{
+	char msg[] = "Error: Can't write to ";
+	write(STDERR_FILENO, msg, _strlen(msg));
+	write(STDERR_FILENO, filename, _strlen(filename));
+	write(STDERR_FILENO, "\n", 1);
+}
+
+/**
+ * print_cant_close_err - ccc
+ * @filename: filename
+ * Return: Always void
+ */
+void print_cant_close_err(int fd)
+{
+	char msg[] = "Error: Can't close fd ";
+	write(STDERR_FILENO, msg, _strlen(msg));
+	write(STDERR_FILENO, &fd, sizeof(fd));
+	write(STDERR_FILENO, "\n", 1);
+}
+
+/**
+ * _strlen - returns the length of a string
+ *
+ * @s: the string
+ *
+ * Return: length of s.
+ */
+int _strlen(char *s)
+{
+	int len = 0;
+
+	while (*s != '\0')
+	{
+		len++;
+		s++;
+	}
+
+	return (len);
 }
